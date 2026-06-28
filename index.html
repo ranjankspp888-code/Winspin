@@ -80,7 +80,6 @@
 </head>
 <body class="text-slate-100 min-h-screen flex items-center justify-center overflow-x-hidden antialiased relative">
 
-    <!-- PROFESSIONAL CUSTOM HTML ALERT SYSTEM MODAL -->
     <div id="custom-toast" class="fixed top-4 z-50 hidden w-11/12 max-w-sm px-4 py-3.5 rounded-2xl shadow-2xl flex items-center justify-between gap-3 border backdrop-blur-xl">
         <div class="flex items-center gap-2.5">
             <div id="toast-icon-box" class="w-7 h-7 rounded-full flex items-center justify-center text-sm"></div>
@@ -91,7 +90,6 @@
         </button>
     </div>
 
-    <!-- TRANSACTION HISTORY MODAL SHEET -->
     <div id="history-modal-overlay" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex items-end justify-center">
         <div id="history-sheet-container" class="history-sheet w-full max-w-md bg-slate-900 rounded-t-[2.5rem] border-t border-white/[0.08] p-6 flex flex-col h-[75vh] shadow-2xl">
             
@@ -124,8 +122,6 @@
             <div class="bg-gradient-to-r from-amber-400 to-orange-500 h-full w-full rounded-full origin-left" style="animation: load3s linear forwards;"></div>
         </div>
     </div>
-
-    <style>@keyframes load3s { 0% { transform: scaleX(0); } 100% { transform: scaleX(1); } }</style>
 
     <div id="app-container" class="hidden w-full min-h-screen app-gradient flex flex-col justify-between pb-24 sm:max-w-md sm:min-h-[850px] sm:rounded-3xl sm:shadow-2xl relative overflow-hidden border border-slate-900">
         
@@ -231,10 +227,8 @@
                     </div>
                 </div>
                 
-                <!-- SPIN WHEEL CONTAINER WITH SOUND CONTROLLER TOGGLE BUTTON -->
                 <div class="py-6 flex flex-col items-center justify-center neon-card rounded-3xl relative">
                     
-                    <!-- HIGHLY STYLED AUDIO CONTROLLER TOGGLE OVERLAY (TOP RIGHT) -->
                     <button onclick="toggleSoundState()" id="sound-toggle-btn" class="absolute top-4 right-4 z-30 w-8 h-8 rounded-full bg-slate-950/60 border border-white/[0.05] text-amber-400 flex items-center justify-center text-xs shadow-inner active:scale-90 transition-all">
                         <i class="fas fa-volume-high"></i>
                     </button>
@@ -349,13 +343,21 @@
     </div>
 
     <script>
-        const urlReferredBy = "<?= referredBy ?>"; 
+        // =========================================================================
+        // DEPLOYED GOOGLE APPS SCRIPT WEB APP URL INTEGRATION
+        // =========================================================================
+        const BACKEND_URL = "https://script.google.com/macros/s/AKfycbwTFW7hbb6ui9N3NacBcXh8NZ3LbXj2fAlomF7IFH93ub8_PNeH8ksJm2xYnbhZ57il/exec"; 
+
+        // Extract referral logic directly from GitHub page parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlReferredBy = urlParams.get('ref') || ""; 
+
         let sessionMobile = "";
         let rewardSegments = []; 
         let isSpinning = false;
         let currentRotationDegree = 0;
         let toastTimer;
-        let isSoundEnabled = true; // SOUND STATE CONTROLLER VARIABLE
+        let isSoundEnabled = true;
 
         // NATIVE GAME SOUND HARNESS VIA WEB AUDIO API LAYER
         let audioCtx;
@@ -376,7 +378,7 @@
         }
 
         function playSound(type) {
-            if(!isSoundEnabled) return; // Mute processing condition check
+            if(!isSoundEnabled) return; 
             try {
                 initAudio();
                 if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -389,7 +391,6 @@
                 const now = audioCtx.currentTime;
 
                 if (type === 'click') {
-                    // Crisp dynamic tap sound
                     osc.type = 'triangle';
                     osc.frequency.setValueAtTime(600, now);
                     gainNode.gain.setValueAtTime(0.2, now);
@@ -397,7 +398,6 @@
                     osc.start(now); osc.stop(now + 0.06);
                 } 
                 else if (type === 'spin') {
-                    // Professional clicking wheel mechanical engine sequence (5 seconds)
                     let duration = 5.0;
                     let interval = 0.05;
                     for (let t = 0; t < duration; t += interval) {
@@ -419,8 +419,7 @@
                     }
                 } 
                 else if (type === 'success') {
-                    // Popular upward arpeggio slot winning chime melody
-                    const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+                    const notes = [523.25, 659.25, 783.99, 1046.50]; 
                     notes.forEach((freq, idx) => {
                         let nOsc = audioCtx.createOscillator();
                         let nGain = audioCtx.createGain();
@@ -433,7 +432,6 @@
                     });
                 } 
                 else if (type === 'fail') {
-                    // Descending down-pitch shift game over note
                     osc.type = 'sawtooth';
                     osc.frequency.setValueAtTime(180, now);
                     osc.frequency.linearRampToValueAtTime(90, now + 0.5);
@@ -444,7 +442,6 @@
             } catch(e) { console.log("Audio pipeline state restriction:", e); }
         }
 
-        // PROFESSIONAL CUSTOM HTML ALERT FUNCTION
         function showAlert(message, type = "success") {
             const toast = document.getElementById('custom-toast');
             const iconBox = document.getElementById('toast-icon-box');
@@ -473,7 +470,6 @@
             setTimeout(() => { toast.classList.add('hidden'); }, 400);
         }
 
-        // TRANSACTION HISTORY UI CONTROLS
         function openTransactionHistory() {
             if(!sessionMobile) return;
             const container = document.getElementById('history-logs-container');
@@ -484,7 +480,9 @@
             overlay.classList.remove('hidden');
             setTimeout(() => sheet.classList.add('open'), 10);
             
-            google.script.run.withSuccessHandler(function(logs) {
+            fetch(`${BACKEND_URL}?action=getTransactionHistory&mobile=${sessionMobile}`)
+            .then(res => res.json())
+            .then(logs => {
                 if(!logs || logs.length === 0) {
                     container.innerHTML = `<div class="py-16 text-slate-500 text-xs"><i class="fas fa-folder-open text-2xl mb-2 text-slate-600"></i><br>No transaction data assets allocated to this user state.</div>`;
                     return;
@@ -520,9 +518,10 @@
                     `;
                 });
                 container.innerHTML = `<div class="space-y-2.5 max-h-full pb-6 text-left">${html}</div>`;
-            }).withFailureHandler(function() {
+            })
+            .catch(() => {
                 container.innerHTML = `<div class="py-12 text-red-400 text-xs"><i class="fas fa-circle-exclamation text-lg mb-1"></i><br>Failed to synchronize log pipelines.</div>`;
-            }).getTransactionHistory(sessionMobile);
+            });
         }
 
         function closeTransactionHistory() {
@@ -537,6 +536,7 @@
                 document.getElementById('splash-screen').style.display = 'none';
                 document.getElementById('app-container').classList.remove('hidden');
                 
+                // FIXED LOGIC: Default goes to login now unless valid referral string exists
                 if(urlReferredBy && urlReferredBy.trim() !== "") {
                     showPage('register');
                     const referInput = document.getElementById('reg-ref');
@@ -592,7 +592,12 @@
             if (!mobile || !pass) return displayError("Please fill out both Mobile Number and Password fields.");
             setLoading('btn-login', true, "Checking Entry...");
             
-            google.script.run.withSuccessHandler(function(response) {
+            fetch(`${BACKEND_URL}?action=loginUser`, {
+                method: "POST",
+                body: JSON.stringify({ mobile: mobile, password: pass })
+            })
+            .then(res => res.json())
+            .then(response => {
                 setLoading('btn-login', false, "Login Account");
                 if (response.success) {
                     sessionMobile = mobile; 
@@ -616,17 +621,24 @@
                     showPage('dashboard');
                     showAlert("Welcome back! Login successful.", "success");
                 } else { displayError(response.message); }
-            }).withFailureHandler(function() {
+            })
+            .catch(() => {
                 setLoading('btn-login', false, "Login Account");
                 displayError("Server side authorization crashed.");
-            }).loginUser(mobile, pass);
+            });
         }
 
         function processKycUpdate() {
             const upiId = document.getElementById('manage-upi-id').value.trim();
             if(!upiId) return showAlert("Please enter a valid UPI ID!", "error");
             setLoading('btn-kyc', true, "Saving...");
-            google.script.run.withSuccessHandler(function(res) {
+            
+            fetch(`${BACKEND_URL}?action=updateUpiId`, {
+                method: "POST",
+                body: JSON.stringify({ mobile: sessionMobile, upiId: upiId })
+            })
+            .then(res => res.json())
+            .then(res => {
                 setLoading('btn-kyc', false, "Save & Verify KYC");
                 if(res.success) {
                     updateKycBadge("Verified");
@@ -634,17 +646,24 @@
                 } else {
                     showAlert(res.message, "error");
                 }
-            }).withFailureHandler(function() {
+            })
+            .catch(() => {
                 setLoading('btn-kyc', false, "Save & Verify KYC");
                 showAlert("KYC update pipeline fault.", "error");
-            }).updateUpiId(sessionMobile, upiId);
+            });
         }
 
         function processWithdrawal() {
             const amount = Number(document.getElementById('withdraw-amount').value.trim());
             if(!amount || amount <= 0) return showAlert("Please enter a valid amount!", "error");
             setLoading('btn-withdraw', true, "Processing...");
-            google.script.run.withSuccessHandler(function(res) {
+            
+            fetch(`${BACKEND_URL}?action=submitWithdrawal`, {
+                method: "POST",
+                body: JSON.stringify({ mobile: sessionMobile, amount: amount })
+            })
+            .then(res => res.json())
+            .then(res => {
                 setLoading('btn-withdraw', false, "Request");
                 if(res.success) {
                     document.getElementById('user-balance-display').innerText = "₹" + Number(res.newBalance).toFixed(2);
@@ -653,32 +672,30 @@
                 } else {
                     showAlert(res.message, "error");
                 }
-            }).withFailureHandler(function() {
+            })
+            .catch(() => {
                 setLoading('btn-withdraw', false, "Request");
                 showAlert("Withdrawal execution failed.", "error");
-            }).submitWithdrawal(sessionMobile, amount);
+            });
         }
 
         function shareReferralLink() {
             const referCode = document.getElementById('user-refer-display').innerText;
             if(!referCode) return;
             setLoading('btn-share', true, "Generating...");
-            google.script.run.withSuccessHandler(function(url) {
-                setLoading('btn-share', false, '<i class="fas fa-paper-plane text-[10px]"></i> Share Refer Link');
-                const shareUrl = url + "?ref=" + referCode;
-                const shareText = `🚀 Join Winspin & Earn Money! \n🎁 Use my Refer Code: ${referCode} \n👉 Click here to register directly: ${shareUrl}`;
-                if (navigator.share) {
-                    navigator.share({ title: 'Winspin App', text: shareText, url: shareUrl }).catch(console.error);
-                } else {
-                    const tempInput = document.createElement("input");
-                    document.body.appendChild(tempInput); tempInput.value = shareUrl; tempInput.select();
-                    document.execCommand("copy"); document.body.removeChild(tempInput);
-                    showAlert("✅ Refer Link Copied to Clipboard!", "success");
-                }
-            }).withFailureHandler(function() {
-                setLoading('btn-share', false, '<i class="fas fa-paper-plane text-[10px]"></i> Share Refer Link');
-                showAlert("Dynamic sharing routing error.", "error");
-            }).getScriptUrl();
+            
+            setLoading('btn-share', false, '<i class="fas fa-paper-plane text-[10px]"></i> Share Refer Link');
+            const cleanUrl = window.location.href.split('?')[0];
+            const shareUrl = cleanUrl + "?ref=" + referCode;
+            const shareText = `🚀 Join Winspin & Earn Money! \n🎁 Use my Refer Code: ${referCode} \n👉 Click here to register directly: ${shareUrl}`;
+            if (navigator.share) {
+                navigator.share({ title: 'Winspin App', text: shareText, url: shareUrl }).catch(console.error);
+            } else {
+                const tempInput = document.createElement("input");
+                document.body.appendChild(tempInput); tempInput.value = shareUrl; tempInput.select();
+                document.execCommand("copy"); document.body.removeChild(tempInput);
+                showAlert("✅ Refer Link Copied to Clipboard!", "success");
+            }
         }
 
         function updateKycBadge(status) {
@@ -700,33 +717,27 @@
             if (!name || !mobile || !pass || !cpass) return displayError("All registration fields are mandatory.");
             if (pass !== cpass) return displayError("Passwords do not match state parameters.");
             setLoading('btn-register', true, "Deploying...");
-            google.script.run.withSuccessHandler(function(response) {
+            
+            fetch(`${BACKEND_URL}?action=registerUser`, {
+                method: "POST",
+                body: JSON.stringify({ name: name, mobile: mobile, password: pass, referral: referral })
+            })
+            .then(res => res.json())
+            .then(response => {
                 setLoading('btn-register', false, "Register Now");
                 if (response.success) { 
                     showAlert("🎉 Registered Successfully! Please Login.", "success"); 
                     showPage('login'); 
                 } else { displayError(response.message); }
-            }).withFailureHandler(function() {
+            })
+            .catch(() => {
                 setLoading('btn-register', false, "Register Now");
                 displayError("Registration process cluster timeout.");
-            }).registerUser({ name, mobile, password: pass, referral });
+            });
         }
 
         function processForgot() {
-            const mobile = document.getElementById('forgot-mobile').value.trim();
-            setLoading('btn-forgot', true, "Querying...");
-            google.script.run.withSuccessHandler(function(res) {
-                setLoading('btn-forgot', false, "Find My Password"); 
-                if(res.success) {
-                    showAlert(res.message, "success");
-                    showPage('login');
-                } else {
-                    showAlert(res.message, "error");
-                }
-            }).withFailureHandler(function() {
-                setLoading('btn-forgot', false, "Find My Password");
-                showAlert("Query runtime exception.", "error");
-            }).resetPassword(mobile);
+            showAlert("Password recovery process must be handled via support routing desk.", "error");
         }
 
         function triggerLogout() {
@@ -764,24 +775,25 @@
                 ctx.textAlign = "right"; ctx.fillStyle = "#fbbf24"; ctx.font = "bold 24px sans-serif";
                 ctx.fillText("₹" + rewardSegments[i].amount, radius - 35, 10); ctx.restore();
             }
-            ctx.beginPath(); ctx.arc(radius, radius, 24, 0, 2 * Math.PI); ctx.fillStyle = '#f59e0b'; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = '#ffffff'; ctx.stroke();
+            ctx.beginPath(); ctx.arc(radius, radius, 24, 0, 2 * Math.PI); ctx.fillStyle = '#f59e0b'; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = '#ffffff'; stroke();
         }
 
         function startSpinSequence() {
             if (isSpinning) return;
             
-            // TAP ACTION SOUND (ONLY ON WHEEL INTERACTIONS)
             playSound('click'); 
-            
             const btn = document.getElementById('btn-spin'); 
             btn.disabled = true; 
             btn.style.opacity = "0.5";
             
-            google.script.run.withSuccessHandler(function(res) {
+            fetch(`${BACKEND_URL}?action=executeSpin`, {
+                method: "POST",
+                body: JSON.stringify({ mobile: sessionMobile })
+            })
+            .then(res => res.json())
+            .then(res => {
                 if (res.success) {
                     isSpinning = true; 
-                    
-                    // WHEEL SPINNING SOUND ENGINE INITIALIZATION
                     playSound('spin'); 
                     
                     const canvas = document.getElementById('wheel-canvas');
@@ -791,16 +803,15 @@
                     
                     currentRotationDegree += 3600 + (targetAngle - (currentRotationDegree % 360)); 
                     
-                    // TRANSITION LOCKED TO STRICT 5-SECOND CURVE
                     canvas.style.transition = 'transform 5s cubic-bezier(0.15, 0.85, 0.35, 1)';
                     canvas.style.transform = `rotate(${currentRotationDegree}deg)`;
                     
                     setTimeout(() => {
                         if (Number(res.wonAmount) === 0) {
-                            playSound('fail'); // Better luck downward game chime sound
+                            playSound('fail'); 
                             showAlert("Better luck next time! 🌟", "error");
                         } else {
-                            playSound('success'); // Congratulations dynamic upward melody sound
+                            playSound('success'); 
                             showAlert(`🎉 Congratulations! Won ₹${res.wonAmount}`, "success");
                         }
                         
@@ -813,7 +824,12 @@
                     btn.disabled = false; 
                     btn.style.opacity = "1"; 
                 }
-            }).executeSpin(sessionMobile);
+            })
+            .catch(() => {
+                showAlert("Spin execution network fault.", "error");
+                btn.disabled = false;
+                btn.style.opacity = "1";
+            });
         }
     </script>
 </body>
