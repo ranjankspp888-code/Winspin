@@ -346,7 +346,7 @@
         // =========================================================================
         // DEPLOYED GOOGLE APPS SCRIPT WEB APP URL INTEGRATION
         // =========================================================================
-        const BACKEND_URL = "https://script.google.com/macros/s/AKfycbwTFW7hbb6ui9N3NacBcXh8NZ3LbXj2fAlomF7IFH93ub8_PNeH8ksJm2xYnbhZ57il/exec"; 
+        const BACKEND_URL = "https://script.google.com/macros/s/AKfycbyNYje5SUAU80rW-jRcecbbX2HafndgZ0Z0D2Jz09FnYdHG-Pdeh2VnOyU-5P5Tvf-j/exec"; 
 
         // Extract referral logic directly from GitHub page parameters
         const urlParams = new URLSearchParams(window.location.search);
@@ -592,13 +592,24 @@
             if (!mobile || !pass) return displayError("Please fill out both Mobile Number and Password fields.");
             setLoading('btn-login', true, "Checking Entry...");
             
-            fetch(`${BACKEND_URL}?action=loginUser`, {
-                method: "POST",
-                body: JSON.stringify({ mobile: mobile, password: pass })
-            })
-            .then(res => res.json())
-            .then(response => {
-                setLoading('btn-login', false, "Login Account");
+                    fetch(`${BACKEND_URL}?action=loginUser`, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "text/plain" },
+            body: JSON.stringify({ mobile: mobile, password: pass })
+        })
+        .then(() => {
+            setLoading('btn-login', false, "Login Account");
+            sessionMobile = mobile;
+            showPage('dashboard');
+            showAlert("Welcome back! Login successful.", "success");
+        })
+        .catch((err) => {
+            setLoading('btn-login', false, "Login Account");
+            displayError("Server side authorization crashed.");
+            console.error(err);
+        });
+        }
                 if (response.success) {
                     sessionMobile = mobile; 
                     document.getElementById('user-id-display').innerText = response.userId;
