@@ -77,6 +77,7 @@
 </head>
 <body class="text-slate-100 min-h-screen flex items-center justify-center overflow-x-hidden antialiased relative">
 
+    <!-- SMOOTH TOAST INTERFACE -->
     <div id="custom-toast" class="fixed top-4 z-50 hidden w-11/12 max-w-sm px-4 py-3.5 rounded-2xl shadow-2xl flex items-center justify-between gap-3 border backdrop-blur-xl">
         <div class="flex items-center gap-2.5">
             <div id="toast-icon-box" class="w-7 h-7 rounded-full flex items-center justify-center text-sm"></div>
@@ -87,6 +88,7 @@
         </button>
     </div>
 
+    <!-- LEDGER ACCOUNT STATEMENT MODAL -->
     <div id="history-modal-overlay" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex items-end justify-center">
         <div id="history-sheet-container" class="history-sheet w-full max-w-md bg-slate-900 rounded-t-[2.5rem] border-t border-white/[0.08] p-6 flex flex-col h-[75vh] shadow-2xl">
             <div class="flex items-center justify-between pb-4 border-b border-white/[0.05]">
@@ -103,6 +105,7 @@
         </div>
     </div>
 
+    <!-- INITIAL STARTUP ANIMATION LAYER -->
     <div id="splash-screen" class="fixed inset-0 bg-slate-950 z-50 flex flex-col items-center justify-center p-6 text-center select-none">
         <div class="relative mb-6">
             <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-amber-500 to-indigo-600 flex items-center justify-center shadow-2xl animate-spin" style="animation-duration: 3.5s;">
@@ -118,6 +121,7 @@
     </div>
     <style>@keyframes load3s { 0% { transform: scaleX(0); } 100% { transform: scaleX(1); } }</style>
 
+    <!-- MAIN INTERFACE CORE HARNESS -->
     <div id="app-container" class="hidden w-full min-h-screen app-gradient flex flex-col justify-between pb-24 sm:max-w-md sm:min-h-[850px] sm:rounded-3xl sm:shadow-2xl relative overflow-hidden border border-slate-900">
         
         <div class="flex items-center justify-between px-6 pt-6 pb-4 border-b border-white/[0.03]">
@@ -137,6 +141,7 @@
         </div>
 
         <div class="px-6 flex-1 flex flex-col justify-center">
+            <!-- 1. SIGN IN MANAGEMENT SCREEN -->
             <div id="login-section" class="w-full space-y-6">
                 <div class="space-y-4">
                     <div>
@@ -160,6 +165,7 @@
                 <p class="text-center text-xs text-slate-400">Don't have an account? <button onclick="showPage('register')" class="text-amber-400 font-bold ml-1 hover:underline">Register Here</button></p>
             </div>
 
+            <!-- 2. IDENTITY CREATION MANAGEMENT SCREEN -->
             <div id="register-section" class="w-full space-y-4 hidden py-4">
                 <div>
                     <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">Full Name</label>
@@ -188,7 +194,9 @@
             </div>
         </div>
 
+        <!-- APP LIVE CORE HUB HOUSING -->
         <div id="app-tabs-content" class="hidden px-6 flex-1 flex flex-col justify-start space-y-5 mt-2">
+            <!-- TAB A: LIVE SPINNING MATRIX -->
             <div id="tab-home" class="space-y-5 flex-1 flex flex-col justify-between">
                 <div class="neon-card p-4 rounded-2xl text-center space-y-1 relative">
                     <p class="text-xs text-slate-400 font-medium">Welcome back, <span id="user-name-display" class="text-slate-100 font-bold">User</span></p>
@@ -213,6 +221,7 @@
                 <div class="h-1"></div>
             </div>
 
+            <!-- TAB B: SHARE SYSTEM ALLOCATION -->
             <div id="tab-refer" class="hidden space-y-4 pt-2">
                 <div class="neon-card p-5 rounded-2xl text-center space-y-2.5">
                     <div class="w-12 h-12 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 text-lg mx-auto"><i class="fas fa-gift"></i></div>
@@ -240,6 +249,7 @@
                 </div>
             </div>
 
+            <!-- TAB C: BANKING TRANSACTION MANAGEMENT -->
             <div id="tab-manage" class="hidden space-y-4 pt-2 overflow-y-auto max-h-[480px] pr-1">
                 <button onclick="openTransactionHistory()" class="w-full neon-card rounded-2xl p-4 flex items-center justify-between hover:bg-slate-800/50 transition duration-300 active:scale-[0.99] group text-left">
                     <div class="flex items-center gap-3">
@@ -286,6 +296,7 @@
             </div>
         </div>
 
+        <!-- FOOTER NAVIGATION BAR -->
         <div id="bottom-nav-bar" class="hidden fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-slate-950/90 border-t border-slate-900 flex items-center justify-around py-3 px-2 z-40 shadow-2xl rounded-t-2xl backdrop-blur-lg">
             <button onclick="switchTab('home')" id="nav-home" class="nav-btn active flex flex-col items-center gap-1 text-slate-400 transition-all">
                 <i class="fas fa-circle-dot text-base"></i>
@@ -302,9 +313,10 @@
         </div>
     </div>
 
+    <!-- MAIN ENGINE DATA HARNESS INTERACTION LAYER -->
     <script>
         // PASTE YOUR RE-DEPLOYED APPS SCRIPT WEB APP URL LINK HERE:
-        const BACKEND_URL = "https://script.google.com/macros/s/AKfycbzw6xT0SsNrfthNcgaLjpynkhxd4b6dEbfd16ShMIx51zvs7APYdZvspw7vLPVB20Uq/exec"; 
+        const BACKEND_URL = "https://script.google.com/macros/s/AKfycbwTFW7hbb6ui9N3NacBcXh8NZ3LbXj2fAlomF7IFH93ub8_PNeH8ksJm2xYnbhZ57il/exec"; 
 
         const urlParams = new URLSearchParams(window.location.search);
         const urlReferredBy = urlParams.get('ref') || ""; 
@@ -370,7 +382,7 @@
                     osc.frequency.linearRampToValueAtTime(90, now + 0.5); gainNode.gain.setValueAtTime(0.15, now);
                     gainNode.gain.linearRampToValueAtTime(0.001, now + 0.5); osc.start(now); osc.stop(now + 0.5);
                 }
-            } catch(e) { console.log("Audio Context Exception:", e); }
+            } catch(e) { console.log("Audio Error Context:", e); }
         }
 
         function showAlert(message, type = "success") {
@@ -403,14 +415,14 @@
             const overlay = document.getElementById('history-modal-overlay');
             const sheet = document.getElementById('history-sheet-container');
             
-            container.innerHTML = `<div class="py-12 text-slate-500 text-xs"><i class="fas fa-spinner animate-spin text-lg mb-2 text-indigo-400"></i><br>Syncing secure database statements...</div>`;
+            container.innerHTML = `<div class="py-12 text-slate-500 text-xs"><i class="fas fa-spinner animate-spin text-lg mb-2 text-indigo-400"></i><br>Syncing ledger history statement...</div>`;
             overlay.classList.remove('hidden'); setTimeout(() => sheet.classList.add('open'), 10);
             
             fetch(`${BACKEND_URL}?action=getTransactionHistory&mobile=${sessionMobile}`)
             .then(res => res.json())
             .then(logs => {
                 if(!logs || logs.length === 0) {
-                    container.innerHTML = `<div class="py-16 text-slate-500 text-xs"><i class="fas fa-folder-open text-2xl mb-2 text-slate-600"></i><br>No log transactions found for this user profile.</div>`;
+                    container.innerHTML = `<div class="py-16 text-slate-500 text-xs"><i class="fas fa-folder-open text-2xl mb-2 text-slate-600"></i><br>No log statements found for this user account.</div>`;
                     return;
                 }
                 let html = "";
@@ -442,7 +454,7 @@
                 container.innerHTML = `<div class="space-y-2.5 max-h-full pb-6 text-left">${html}</div>`;
             })
             .catch(() => {
-                container.innerHTML = `<div class="py-12 text-red-400 text-xs"><i class="fas fa-circle-exclamation text-lg mb-1"></i><br>Failed to synchronize logs.</div>`;
+                container.innerHTML = `<div class="py-12 text-red-400 text-xs"><i class="fas fa-circle-exclamation text-lg mb-1"></i><br>Database statement log pipeline fault.</div>`;
             });
         }
 
@@ -498,54 +510,36 @@
             document.getElementById('nav-' + tabName).classList.add('active');
         }
 
-        // TEXT/PLAIN CROSS-ORIGIN TUNNELING TO BYPASS CODES GATEWAY CRASHES
-        function executeSecurePost(actionParam, payload, successCallback) {
-            fetch(`${BACKEND_URL}?action=${actionParam}`, {
-                method: "POST",
-                mode: "no-cors",
-                headers: { "Content-Type": "text/plain" },
-                body: JSON.stringify(payload)
-            })
-            .then(() => {
-                // For direct action queries that execute updates immediately
-                if(actionParam === "updateUpiId") {
-                    setLoading('btn-kyc', false, "Save & Verify KYC");
-                    updateKycBadge("Verified"); showAlert("KYC Database Updated!", "success");
-                } else if(actionParam === "submitWithdrawal") {
-                    setLoading('btn-withdraw', false, "Request");
-                    document.getElementById('withdraw-amount').value = "";
-                    showAlert("Withdrawal Request Logged! Refreshing balance.", "success");
-                } else if(actionParam === "registerUser") {
-                    setLoading('btn-register', false, "Register Now");
-                    showAlert("🎉 Registration Payload Dispatched! Please Login.", "success");
-                    showPage('login');
+        // FULL CORRECTION LAYER - TUNNELED GET DISPATCH INSTEAD OF BLOCKED CROSS-ORIGIN POST BODIES
+        function executeSecureCall(actionParam, payload, successCallback, errorCallback) {
+            let queryParts = [`action=${actionParam}`];
+            for (let key in payload) {
+                queryParts.push(`${encodeURIComponent(key)}=${encodeURIComponent(payload[key])}`);
+            }
+            let targetUrl = `${BACKEND_URL}?${queryParts.join("&")}`;
+
+            fetch(targetUrl, { method: "GET" })
+            .then(res => res.json())
+            .then(res => {
+                if (res && typeof res === 'object') {
+                    successCallback(res);
+                } else {
+                    errorCallback("Invalid system handshake context received.");
                 }
             })
             .catch((err) => {
-                setLoading('btn-login', false, "Login Account");
-                setLoading('btn-register', false, "Register Now");
-                setLoading('btn-kyc', false, "Save & Verify KYC");
-                setLoading('btn-withdraw', false, "Request");
-                displayError("Network pipeline exception encountered.");
-                console.error(err);
+                errorCallback(err);
             });
         }
 
-        // Standard dynamic JSON fetch for profile session loads
         function processLogin() {
             clearError();
             const mobile = document.getElementById('login-mobile').value.trim();
             const pass = document.getElementById('login-pass').value.trim();
             if (!mobile || !pass) return displayError("Please fill out both Mobile Number and Password fields.");
-            setLoading('btn-login', true, "Checking Entry...");
+            setLoading('btn-login', true, "Verifying Profile...");
             
-            fetch(`${BACKEND_URL}?action=loginUser`, {
-                method: "POST",
-                headers: { "Content-Type": "text/plain" },
-                body: JSON.stringify({ mobile: mobile, password: pass })
-            })
-            .then(res => res.json())
-            .then(response => {
+            executeSecureCall("loginUser", { mobile: mobile, password: pass }, function(response) {
                 setLoading('btn-login', false, "Login Account");
                 if (response.success) {
                     sessionMobile = mobile; 
@@ -558,21 +552,47 @@
                     document.getElementById('stat-total-rewards').innerText = "₹" + Number(response.referralRewards).toFixed(2);
                     document.getElementById('manage-upi-id').value = response.upiId;
                     updateKycBadge(response.kycStatus);
+                    
                     document.getElementById('support-email-display').innerText = response.supportEmail;
                     document.getElementById('support-email-link').href = "mailto:" + response.supportEmail + "?subject=Winspin Query (ID: " + response.userId + ")";
                     
                     rewardSegments = response.rewards; 
-                    drawWheel(); showPage('dashboard');
+                    drawWheel(); 
+                    showPage('dashboard');
                     showAlert("Welcome back! Login successful.", "success");
-                } else { displayError(response.message); }
-            })
-            .catch(() => {
+                } else { 
+                    displayError(response.message); 
+                }
+            }, function(err) {
                 setLoading('btn-login', false, "Login Account");
-                // Bypass direct load session fallback state if dynamic network timing blocks JSON headers
-                sessionMobile = mobile;
-                rewardSegments = [{id:"1",amount:10},{id:"2",amount:20},{id:"3",amount:50},{id:"4",amount:0},{id:"5",amount:100},{id:"6",amount:5}];
-                drawWheel(); showPage('dashboard');
-                showAlert("Logged in via Tunneled Profile Bypass.", "success");
+                displayError("Server side authorization crashed. Verify re-deployment mapping.");
+                console.error(err);
+            });
+        }
+
+        function processRegister() {
+            const name = document.getElementById('reg-name').value.trim();
+            const mobile = document.getElementById('reg-mobile').value.trim();
+            const pass = document.getElementById('reg-pass').value.trim();
+            const cpass = document.getElementById('reg-cpass').value.trim();
+            const referral = document.getElementById('reg-ref').value.trim();
+            
+            if (!name || !mobile || !pass || !cpass) return displayError("All registration fields are mandatory.");
+            if (pass !== cpass) return displayError("Passwords do not match.");
+            setLoading('btn-register', true, "Dispatched state payload...");
+            
+            executeSecureCall("registerUser", { name: name, mobile: mobile, password: pass, referral: referral }, function(res) {
+                setLoading('btn-register', false, "Register Now");
+                if(res.success) {
+                    showAlert("🎉 Registered Successfully! Please Login.", "success"); 
+                    showPage('login');
+                } else {
+                    displayError(res.message);
+                }
+            }, function(err) {
+                setLoading('btn-register', false, "Register Now");
+                displayError("Registration structural network timeout.");
+                console.error(err);
             });
         }
 
@@ -580,14 +600,34 @@
             const upiId = document.getElementById('manage-upi-id').value.trim();
             if(!upiId) return showAlert("Please enter a valid UPI ID!", "error");
             setLoading('btn-kyc', true, "Saving...");
-            executeSecurePost("updateUpiId", { mobile: sessionMobile, upiId: upiId });
+            
+            executeSecureCall("updateUpiId", { mobile: sessionMobile, upiId: upiId }, function(res) {
+                setLoading('btn-kyc', false, "Save & Verify KYC");
+                if(res.success) {
+                    updateKycBadge("Verified"); showAlert(res.message, "success");
+                } else { showAlert(res.message, "error"); }
+            }, function() {
+                setLoading('btn-kyc', false, "Save & Verify KYC");
+                showAlert("KYC authorization pipeline error.", "error");
+            });
         }
 
         function processWithdrawal() {
             const amount = Number(document.getElementById('withdraw-amount').value.trim());
             if(!amount || amount <= 0) return showAlert("Please enter a valid amount!", "error");
             setLoading('btn-withdraw', true, "Processing...");
-            executeSecurePost("submitWithdrawal", { mobile: sessionMobile, amount: amount });
+            
+            executeSecureCall("submitWithdrawal", { mobile: sessionMobile, amount: amount }, function(res) {
+                setLoading('btn-withdraw', false, "Request");
+                if(res.success) {
+                    document.getElementById('user-balance-display').innerText = "₹" + Number(res.newBalance).toFixed(2);
+                    document.getElementById('withdraw-amount').value = ""; 
+                    showAlert(res.message, "success");
+                } else { showAlert(res.message, "error"); }
+            }, function() {
+                setLoading('btn-withdraw', false, "Request");
+                showAlert("Withdrawal pipeline exception.", "error");
+            });
         }
 
         function shareReferralLink() {
@@ -609,27 +649,15 @@
         function updateKycBadge(status) {
             const badge = document.getElementById('kyc-status-badge'); badge.innerText = status;
             if(status === "Verified") {
-                badge.className = "text-[9px] bg-emerald-500/10 text-emerald-400 px-2.5 py-0.5 rounded-full font-bold uppercase border border-emerald-500/20";
+                badge.className = "text-[9px] bg-emerald-500/10 text-emerald-400 px-2.5 py-0.5 rounded-full font-bold uppercase border border-emerald-500/20 shadow-sm";
             } else {
-                badge.className = "text-[9px] bg-amber-500/10 text-amber-400 px-2.5 py-0.5 rounded-full font-bold uppercase border border-amber-500/20";
+                badge.className = "text-[9px] bg-amber-500/10 text-amber-400 px-2.5 py-0.5 rounded-full font-bold uppercase border border-amber-500/20 shadow-sm";
             }
-        }
-
-        function processRegister() {
-            const name = document.getElementById('reg-name').value.trim();
-            const mobile = document.getElementById('reg-mobile').value.trim();
-            const pass = document.getElementById('reg-pass').value.trim();
-            const cpass = document.getElementById('reg-cpass').value.trim();
-            const referral = document.getElementById('reg-ref').value.trim();
-            if (!name || !mobile || !pass || !cpass) return displayError("All fields are mandatory.");
-            if (pass !== cpass) return displayError("Passwords do not match.");
-            setLoading('btn-register', true, "Deploying...");
-            executeSecurePost("registerUser", { name: name, mobile: mobile, password: pass, referral: referral });
         }
 
         function triggerLogout() { sessionMobile = ""; document.getElementById('user-balance-display').innerText = "₹0.00"; showPage('login'); showAlert("Logged out securely.", "success"); }
         function displayError(msg) { const b = document.getElementById('error-box'); document.getElementById('error-msg').innerText = msg; b.classList.remove('hidden'); b.scrollIntoView({ behavior: 'smooth' }); }
-        function clearError() { document.getElementById('error-box').classList.add('hidden'); }
+        function clearError() { document.getElementById('error-box').className = "mx-6 hidden mt-4 bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-2xl text-xs flex items-center gap-2.5 shadow-inner"; }
 
         function setLoading(btnId, status, txt) {
             const btn = document.getElementById(btnId); if (!btn) return;
@@ -649,9 +677,9 @@
                 ctx.fillStyle = colors[i % colors.length]; ctx.fill(); 
                 ctx.lineWidth = 3; ctx.strokeStyle = '#0b0f19'; ctx.stroke();
                 ctx.save(); ctx.translate(radius, radius); ctx.rotate(angle + anglePerSegment / 2);
-                ctx.textAlign = "right"; ctx.fillStyle = "#fbbf24"; ctx.font = "bold 24px sans-serif";
-                let amtText = rewardSegments[i] ? "₹" + rewardSegments[i].amount : "₹0";
-                ctx.fillText(amtText, radius - 35, 10); ctx.restore();
+                ctx.textAlign = "right"; ctx.fillStyle = "#fbbf24"; ctx.font = "bold 20px sans-serif";
+                let amtText = "₹" + rewardSegments[i].amount;
+                ctx.fillText(amtText, radius - 35, 8); ctx.restore();
             }
             ctx.beginPath(); ctx.arc(radius, radius, 24, 0, 2 * Math.PI); ctx.fillStyle = '#f59e0b'; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = '#ffffff'; ctx.stroke();
         }
@@ -661,18 +689,13 @@
             playSound('click');
             const btn = document.getElementById('btn-spin'); btn.disabled = true; btn.style.opacity = "0.5";
             
-            fetch(`${BACKEND_URL}?action=executeSpin`, {
-                method: "POST",
-                headers: { "Content-Type": "text/plain" },
-                body: JSON.stringify({ mobile: sessionMobile })
-            })
-            .then(res => res.json())
-            .then(res => {
+            executeSecureCall("executeSpin", { mobile: sessionMobile }, function(res) {
                 if (res.success) {
                     isSpinning = true; playSound('spin');
                     const canvas = document.getElementById('wheel-canvas');
                     let winIndex = rewardSegments.findIndex(r => r.id === res.rewardId);
                     if(winIndex === -1) winIndex = 0;
+                    
                     const anglePerSegment = 360 / rewardSegments.length;
                     const targetAngle = 270 - (winIndex * anglePerSegment) - (anglePerSegment / 2);
                     currentRotationDegree += 3600 + (targetAngle - (currentRotationDegree % 360));
@@ -690,19 +713,11 @@
                         document.getElementById('user-spins-display').innerText = res.spinsLeft;
                         isSpinning = false; btn.disabled = false; btn.style.opacity = "1";
                     }, 5050);
-                } else { showAlert(res.message, "error"); btn.disabled = false; btn.style.opacity = "1"; }
-            })
-            .catch(() => {
-                // Fallback simulation sequence if CORS restriction drops direct responses
-                isSpinning = true; playSound('spin');
-                const canvas = document.getElementById('wheel-canvas');
-                currentRotationDegree += 3840;
-                canvas.style.transition = 'transform 5s cubic-bezier(0.15, 0.85, 0.35, 1)';
-                canvas.style.transform = `rotate(${currentRotationDegree}deg)`;
-                setTimeout(() => {
-                    playSound('success'); showAlert("🎉 Spin Logged Securely into Backend Sheet Database!", "success");
-                    isSpinning = false; btn.disabled = false; btn.style.opacity = "1";
-                }, 5050);
+                } else { 
+                    showAlert(res.message, "error"); btn.disabled = false; btn.style.opacity = "1"; 
+                }
+            }, function() {
+                showAlert("Spin database log error.", "error"); btn.disabled = false; btn.style.opacity = "1";
             });
         }
     </script>
