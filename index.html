@@ -23,7 +23,6 @@
         
         button { width: 100%; padding: 12px; background: var(--primary); color: var(--white); border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 5px; transition: transform 0.2s; }
         button:active { transform: scale(0.98); } button:disabled { background: #999; cursor: not-allowed; }
-        .btn-outline { background: transparent; color: var(--primary); border: 2px solid var(--primary); }
         .link { color: var(--primary); text-align: center; display: block; margin-top: 15px; cursor: pointer; text-decoration: underline; font-size: 14px; }
         
         .nav-btn { background: none; color: #888; flex-direction: column; display: flex; align-items: center; justify-content: center; width: auto; padding: 5px; margin:0; font-size: 14px; font-weight: bold; }
@@ -211,12 +210,10 @@
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbxizqWX-N5vZbLc0CoLvsVJSwDENSw45wU9JaYr-wm6Ffe9fYXClXOAcNR9SWrZcBo5tw/exec"; 
+        const API_URL = "https://script.google.com/macros/s/AKfycbzLIgFmTYEHIuMdt2gWVpm9YQYUI39zwuMzt00QgQlbJBq5qJjXAbMNCls0LcXQbEDIXw/exec"; 
         
         let currentUser = {};
         let appSettings = {};
-        
-        // Prizes corresponding to wheel sections (6 slices)
         const spinPrizes = [5, 10, 2, 50, 1, 20]; 
 
         function showLoader() { document.getElementById('loader').style.display = 'flex'; }
@@ -266,8 +263,7 @@
             showLoader();
             try {
                 const response = await fetch(API_URL, { method: 'POST', body: JSON.stringify(data) });
-                hideLoader();
-                return await response.json();
+                hideLoader(); return await response.json();
             } catch (error) {
                 hideLoader(); showModal("Error", "Network error. Please try again."); return null;
             }
@@ -306,18 +302,14 @@
             if(res && res.success) appSettings = res.data;
         }
 
-        // Spin Logic
         function startSpin() {
             const btn = document.getElementById('spinBtn');
             const wheel = document.getElementById('wheel');
             btn.disabled = true; btn.innerText = "Spinning...";
 
-            // Random prize selection logic
             const targetSlice = Math.floor(Math.random() * 6); 
             const rewardAmount = spinPrizes[targetSlice];
             
-            // Calculate rotation: 6 slices = 60 degrees each. Add 5 full rotations (1800deg) for effect.
-            // Slices start from top center, rotate anti-clockwise to calculate target.
             const sliceDegree = 360 / 6;
             const targetDegree = 1800 + (360 - (targetSlice * sliceDegree)) - (sliceDegree/2);
             
@@ -334,7 +326,6 @@
                     showModal("Oops", "Something went wrong saving your reward.");
                 }
                 
-                // Reset visual safely
                 wheel.style.transition = "none";
                 wheel.style.transform = `rotate(${targetDegree % 360}deg)`;
                 setTimeout(() => wheel.style.transition = "transform 4s cubic-bezier(0.2, 0.8, 0.2, 1)", 50);
@@ -343,7 +334,6 @@
             }, 4200);
         }
 
-        // Transactions logic
         async function fetchTransactions() {
             const res = await apiCall({ action: "getTransactions", userId: currentUser.userId });
             if(res && res.success) {
@@ -367,7 +357,6 @@
             }
         }
 
-        // Withdrawal Logic
         function openWithdrawModal() {
             document.getElementById('withdrawBal').innerText = currentUser.wallet;
             document.getElementById('withdrawAmt').value = "";
@@ -393,7 +382,6 @@
             }
         }
 
-        // KYC & Support
         async function updateKyc() {
             if(currentUser.kyc === "Verified") return showModal("KYC Verified", "Your UPI is verified: " + currentUser.upi);
             let upi = prompt("Enter your UPI ID (eg: mobile@upi) for verification:");
