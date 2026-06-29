@@ -5,104 +5,110 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Wincash</title>
     <style>
-        :root { --primary: #4A90E2; --bg-light: #F4F7F6; --text-dark: #333; --white: #FFF; }
+        :root { --primary: #4A90E2; --bg-light: #F4F7F6; --text-dark: #333; --white: #FFF; --green: #2ecc71; --orange: #e67e22; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: var(--bg-light); color: var(--text-dark); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
-        /* Layout */
         .header { background: var(--white); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: fixed; top: 0; width: 100%; z-index: 10; height: 60px; }
         .content { margin-top: 60px; margin-bottom: 70px; overflow-y: auto; flex-grow: 1; padding: 20px; }
         .bottom-nav { background: var(--white); position: fixed; bottom: 0; width: 100%; height: 70px; display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 10; }
         
-        /* Views */
-        .view { display: none; }
-        .view.active { display: block; }
+        .view { display: none; } .view.active { display: block; }
         .auth-container { max-width: 400px; margin: 40px auto; background: var(--white); padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         
-        /* Inputs & Buttons */
-        input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; outline: none; margin-bottom: 10px; }
+        input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; outline: none; margin-bottom: 10px; font-size: 16px; }
         .input-group { position: relative; width: 100%; }
         .input-group input { padding-right: 40px; margin-bottom: 10px; }
         .eye-btn { position: absolute; right: 10px; top: 22px; transform: translateY(-50%); cursor: pointer; font-size: 18px; user-select: none; }
         
-        button { width: 100%; padding: 12px; background: var(--primary); color: var(--white); border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 5px; transition: transform 0.2s; }
-        button:active { transform: scale(0.98); }
-        button:disabled { background: #999; cursor: not-allowed; }
+        button { width: 100%; padding: 12px; background: var(--primary); color: var(--white); border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 5px; transition: transform 0.2s; }
+        button:active { transform: scale(0.98); } button:disabled { background: #999; cursor: not-allowed; }
+        .btn-outline { background: transparent; color: var(--primary); border: 2px solid var(--primary); }
         .link { color: var(--primary); text-align: center; display: block; margin-top: 15px; cursor: pointer; text-decoration: underline; font-size: 14px; }
         
-        /* Nav Buttons */
-        .nav-btn { background: none; color: var(--text-dark); flex-direction: column; display: flex; align-items: center; justify-content: center; width: auto; padding: 5px; margin:0; }
+        .nav-btn { background: none; color: #888; flex-direction: column; display: flex; align-items: center; justify-content: center; width: auto; padding: 5px; margin:0; font-size: 14px; font-weight: bold; }
         .nav-btn.active { color: var(--primary); }
         
-        /* Loader Animation */
-        .loader-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); z-index: 999; justify-content: center; align-items: center; flex-direction: column; }
+        /* Stats Cards */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .stat-card { background: var(--white); padding: 20px 10px; border-radius: 12px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .stat-val { font-size: 24px; font-weight: bold; color: var(--primary); margin-top: 5px; }
+
+        /* Loader & Modals */
+        .loader-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); z-index: 999; justify-content: center; align-items: center; flex-direction: column; }
         .spinner { border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 10px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
-        /* Popup Alert */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; }
-        .modal-content { background: var(--white); padding: 25px; border-radius: 12px; text-align: center; max-width: 300px; width: 90%; }
-        
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
+        .modal-content { background: var(--white); padding: 25px; border-radius: 12px; text-align: center; max-width: 350px; width: 100%; max-height: 80vh; overflow-y: auto; }
+        .close-modal { color: #888; float: right; font-size: 24px; cursor: pointer; line-height: 1; margin-top: -10px; margin-right: -10px; }
+
         /* Spin Wheel */
-        .spin-wheel { width: 200px; height: 200px; border-radius: 50%; border: 10px solid var(--primary); margin: 20px auto; position: relative; transition: transform 3s cubic-bezier(0.25, 0.1, 0.25, 1); background: conic-gradient(#f00 0 25%, #0f0 25% 50%, #00f 50% 75%, #ff0 75% 100%); }
-        .pointer { width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid #333; margin: -10px auto 0; position: relative; z-index: 2; }
-        
+        .wheel-container { position: relative; width: 250px; height: 250px; margin: 40px auto; }
+        .wheel { width: 100%; height: 100%; border-radius: 50%; border: 8px solid var(--white); box-shadow: 0 0 15px rgba(0,0,0,0.2); transition: transform 4s cubic-bezier(0.2, 0.8, 0.2, 1); background: conic-gradient(#f1c40f 0 60deg, #e67e22 60deg 120deg, #e74c3c 120deg 180deg, #9b59b6 180deg 240deg, #3498db 240deg 300deg, #2ecc71 300deg 360deg); }
+        .wheel-pointer { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 30px solid #333; z-index: 10; }
+        .wheel-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 50px; height: 50px; background: var(--white); border-radius: 50%; z-index: 5; box-shadow: inset 0 0 5px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--primary); }
+
         /* Manage Menu */
-        .menu-item { background: var(--white); padding: 15px; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
-        .kyc-verified { color: green; font-weight: bold; }
+        .menu-item { background: var(--white); padding: 16px; margin-bottom: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.03); font-weight: 500; cursor: pointer; transition: background 0.2s; }
+        .menu-item:active { background: #f9f9f9; }
+        
+        /* Lists */
+        .txn-list { text-align: left; margin-top: 15px; }
+        .txn-item { border-bottom: 1px solid #eee; padding: 10px 0; display: flex; justify-content: space-between; align-items: center; }
+        .txn-item:last-child { border-bottom: none; }
+        .txn-amt { font-weight: bold; }
+        .text-green { color: var(--green); } .text-orange { color: var(--orange); } .text-red { color: red; }
     </style>
 </head>
 <body>
 
-    <!-- Global Loader -->
     <div id="loader" class="loader-overlay">
         <div class="spinner"></div>
         <p style="font-weight: bold; color: var(--primary);">Please Wait...</p>
     </div>
 
-    <!-- Header -->
     <div class="header" id="appHeader" style="display:none;">
-        <h3 id="topUserName">User Name</h3>
-        <h3 style="color:var(--primary)">₹<span id="topWallet">0</span></h3>
+        <div>
+            <p style="font-size:12px; color:#888;">Welcome back,</p>
+            <h3 id="topUserName">User</h3>
+        </div>
+        <div style="text-align:right;">
+            <p style="font-size:12px; color:#888;">Wallet Balance</p>
+            <h3 style="color:var(--primary)">₹<span id="topWallet">0</span></h3>
+        </div>
     </div>
 
-    <!-- Login View -->
     <div id="loginView" class="view active content">
         <div class="auth-container">
             <h2 style="text-align:center; color:var(--primary); margin-bottom:20px;">WINCASH LOGIN</h2>
             <input type="text" id="loginId" placeholder="User ID or Mobile Number">
-            
             <div class="input-group">
                 <input type="password" id="loginPass" placeholder="Password">
                 <span class="eye-btn" onclick="togglePassword('loginPass', this)">👁️</span>
             </div>
-
             <button onclick="login()">Login</button>
             <span class="link" onclick="switchView('registerView')">New user? Register here</span>
             <span class="link" onclick="switchView('forgotView')">Forgot Password?</span>
         </div>
     </div>
 
-    <!-- Register View -->
     <div id="registerView" class="view content">
         <div class="auth-container">
             <h2 style="text-align:center; color:var(--primary); margin-bottom:20px;">REGISTER</h2>
             <input type="text" id="regName" placeholder="Full Name">
             <input type="email" id="regEmail" placeholder="Email Address">
             <input type="tel" id="regMobile" placeholder="Mobile Number">
-            
             <div class="input-group">
                 <input type="password" id="regPass" placeholder="Password">
                 <span class="eye-btn" onclick="togglePassword('regPass', this)">👁️</span>
             </div>
-
             <input type="text" id="regRefer" placeholder="Referral Code (Optional)">
             <button onclick="register()">Submit</button>
             <span class="link" onclick="switchView('loginView')">Back to Login</span>
         </div>
     </div>
 
-    <!-- Forgot Password View -->
     <div id="forgotView" class="view content">
         <div class="auth-container">
             <h2 style="text-align:center; color:var(--primary); margin-bottom:20px;">RECOVER PASSWORD</h2>
@@ -113,78 +119,115 @@
         </div>
     </div>
 
-    <!-- Dashboard Main Content -->
     <div id="dashboardView" class="view content" style="display:none;">
         
         <div id="homeSubView" class="sub-view">
-            <h2 style="text-align:center;">Spin & Earn</h2>
-            <div class="pointer"></div>
-            <div class="spin-wheel" id="wheel"></div>
-            <button onclick="spinWheel()" style="max-width: 200px; display: block; margin: 20px auto;">SPIN NOW</button>
+            <h2 style="text-align:center; margin-bottom:10px;">Lucky Spin</h2>
+            <p style="text-align:center; color:#666;">Spin the wheel to win exciting cash rewards!</p>
+            
+            <div class="wheel-container">
+                <div class="wheel-pointer"></div>
+                <div class="wheel" id="wheel"></div>
+                <div class="wheel-center">WIN</div>
+            </div>
+            
+            <button id="spinBtn" onclick="startSpin()" style="display: block; margin: 0 auto; max-width: 250px; padding: 15px; font-size: 18px; border-radius: 30px; box-shadow: 0 4px 10px rgba(74, 144, 226, 0.4);">SPIN & EARN</button>
         </div>
 
-        <div id="referSubView" class="sub-view" style="display:none; text-align:center;">
-            <h2>Refer & Earn</h2>
-            <div style="background:var(--white); padding:20px; border-radius:12px; margin-top:20px;">
-                <h3>Your Referral Code</h3>
-                <h1 style="color:var(--primary); letter-spacing: 2px; margin: 10px 0;" id="myReferCode">---</h1>
-                <p>Share this code with your friends and earn rewards!</p>
-                <button onclick="shareApp()">Share Link</button>
+        <div id="referSubView" class="sub-view" style="display:none;">
+            <h2 style="text-align:center; margin-bottom: 20px;">Refer & Earn</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <p style="color:#666; font-size:14px;">Total Referrals</p>
+                    <div class="stat-val" id="statReferrals">0</div>
+                </div>
+                <div class="stat-card">
+                    <p style="color:#666; font-size:14px;">Total Rewards</p>
+                    <div class="stat-val">₹<span id="statEarned">0</span></div>
+                </div>
+            </div>
+
+            <div style="background:var(--white); padding:25px 20px; border-radius:12px; text-align:center; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                <h3 style="color:#333;">Your Referral Code</h3>
+                <h1 style="color:var(--primary); letter-spacing: 3px; margin: 15px 0; background: #f0f7ff; padding: 10px; border-radius: 8px; border: 2px dashed var(--primary);" id="myReferCode">---</h1>
+                <p style="color:#666; font-size: 14px; margin-bottom: 20px;">Share this code with your friends and get instant bonus when they join!</p>
+                <button onclick="shareApp()">Share Link Now</button>
             </div>
         </div>
 
         <div id="manageSubView" class="sub-view" style="display:none;">
-            <h2>Manage Profile</h2><br>
-            <div class="menu-item">
-                <span>KYC (UPI ID)</span>
-                <span id="kycStatus" style="font-size:20px; cursor:pointer;" onclick="updateKyc()">✏️ Pending</span>
+            <h2 style="margin-bottom: 20px;">Manage Account</h2>
+            
+            <div class="menu-item" onclick="fetchTransactions()">
+                <span>📄 All Transactions</span> <span>❯</span>
             </div>
-            <div class="menu-item" onclick="alert('Transaction history soon.')">All Transactions</div>
-            <div class="menu-item" onclick="alert('Withdrawal feature soon.')">Withdrawal Request</div>
-            <div class="menu-item" onclick="supportEmail()">Support</div>
-            <div class="menu-item" style="color:red; font-weight:bold;" onclick="logout()">Logout</div>
+            <div class="menu-item" onclick="openWithdrawModal()">
+                <span>💸 Withdrawal Request</span> <span>❯</span>
+            </div>
+            <div class="menu-item" onclick="updateKyc()">
+                <span>🛡️ KYC Verification</span> <span id="kycStatus" style="font-size:14px; padding: 4px 8px; background: #ffeaa7; border-radius: 12px; color: #d35400;">Pending</span>
+            </div>
+            <div class="menu-item" onclick="supportEmail()">
+                <span>🎧 Help & Support</span> <span>❯</span>
+            </div>
+            <div class="menu-item" style="color:var(--orange);" onclick="logout()">
+                <span style="font-weight:bold;">🚪 Logout</span>
+            </div>
         </div>
     </div>
 
-    <!-- Bottom Nav -->
     <div class="bottom-nav" id="appFooter" style="display:none;">
-        <button class="nav-btn active" onclick="switchTab('homeSubView', this)">🏠 Home</button>
-        <button class="nav-btn" onclick="switchTab('referSubView', this)">👥 Refer</button>
-        <button class="nav-btn" onclick="switchTab('manageSubView', this)">⚙️ Manage</button>
+        <button class="nav-btn active" onclick="switchTab('homeSubView', this)">🏠<br>Home</button>
+        <button class="nav-btn" onclick="switchTab('referSubView', this)">👥<br>Refer</button>
+        <button class="nav-btn" onclick="switchTab('manageSubView', this)">⚙️<br>Manage</button>
     </div>
 
-    <!-- Alert Modal -->
     <div class="modal" id="alertModal">
         <div class="modal-content">
             <h3 id="modalTitle" style="color:var(--primary);">Alert</h3>
-            <p id="modalMessage" style="margin: 15px 0; font-size:16px;"></p>
-            <button onclick="closeModal()">OK</button>
+            <p id="modalMessage" style="margin: 15px 0; font-size:16px; color:#555;"></p>
+            <button onclick="closeModal('alertModal')">OK</button>
+        </div>
+    </div>
+
+    <div class="modal" id="withdrawModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('withdrawModal')">&times;</span>
+            <h3 style="color:var(--primary); margin-bottom:10px;">Withdraw Funds</h3>
+            <p style="font-size:14px; color:#666; margin-bottom:15px;">Available Balance: <b>₹<span id="withdrawBal">0</span></b></p>
+            <input type="number" id="withdrawAmt" placeholder="Enter Amount (₹)" min="1">
+            <button onclick="submitWithdrawal()" style="margin-top:15px;">Submit Request</button>
+        </div>
+    </div>
+
+    <div class="modal" id="txnModal">
+        <div class="modal-content" style="max-height: 90vh;">
+            <span class="close-modal" onclick="closeModal('txnModal')">&times;</span>
+            <h3 style="color:var(--primary); margin-bottom:15px; text-align:left;">Transaction History</h3>
+            <div id="txnList" class="txn-list">
+                </div>
         </div>
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbzYKQjTBywxZ_MOMwnFCDtFkufusqCXTkomwa9zhZbXZejv8gDlGyYpLzhuZJdJQSe66Q/exec"; 
+        const API_URL = "https://script.google.com/macros/s/AKfycbxizqWX-N5vZbLc0CoLvsVJSwDENSw45wU9JaYr-wm6Ffe9fYXClXOAcNR9SWrZcBo5tw/exec"; 
         
         let currentUser = {};
         let appSettings = {};
+        
+        // Prizes corresponding to wheel sections (6 slices)
+        const spinPrizes = [5, 10, 2, 50, 1, 20]; 
 
-        // Loader Toggle
         function showLoader() { document.getElementById('loader').style.display = 'flex'; }
         function hideLoader() { document.getElementById('loader').style.display = 'none'; }
 
-        // Password Eye Toggle
         function togglePassword(inputId, iconElement) {
             const input = document.getElementById(inputId);
-            if(input.type === "password") {
-                input.type = "text";
-                iconElement.innerText = "🙈"; 
-            } else {
-                input.type = "password";
-                iconElement.innerText = "👁️";
-            }
+            if(input.type === "password") { input.type = "text"; iconElement.innerText = "🙈"; } 
+            else { input.type = "password"; iconElement.innerText = "👁️"; }
         }
 
-        // View Navigation
         function switchView(viewId) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.getElementById(viewId).classList.add('active');
@@ -195,6 +238,8 @@
                 document.getElementById('topUserName').innerText = currentUser.name;
                 document.getElementById('topWallet').innerText = currentUser.wallet;
                 document.getElementById('myReferCode').innerText = currentUser.referCode;
+                document.getElementById('statReferrals').innerText = currentUser.totalReferrals || 0;
+                document.getElementById('statEarned').innerText = currentUser.referEarned || 0;
                 updateKycUI();
                 fetchSettings();
             } else {
@@ -215,7 +260,7 @@
             document.getElementById('modalMessage').innerHTML = msg;
             document.getElementById('alertModal').style.display = 'flex';
         }
-        function closeModal() { document.getElementById('alertModal').style.display = 'none'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
         async function apiCall(data) {
             showLoader();
@@ -224,61 +269,36 @@
                 hideLoader();
                 return await response.json();
             } catch (error) {
-                hideLoader();
-                showModal("Error", "Network error. Please try again.");
-                return null;
+                hideLoader(); showModal("Error", "Network error. Please try again."); return null;
             }
         }
 
         async function register() {
             const data = {
                 action: "register",
-                name: document.getElementById('regName').value,
-                email: document.getElementById('regEmail').value,
-                mobile: document.getElementById('regMobile').value,
-                password: document.getElementById('regPass').value,
+                name: document.getElementById('regName').value, email: document.getElementById('regEmail').value,
+                mobile: document.getElementById('regMobile').value, password: document.getElementById('regPass').value,
                 referralCode: document.getElementById('regRefer').value
             };
-            
             if(!data.name || !data.email || !data.mobile || !data.password) return showModal("Error", "Fill all required fields");
             
             const res = await apiCall(data);
             if(res && res.success) {
                 showModal("Success!", `Registration Successful!<br><br><b>User ID:</b> ${res.userId}<br><b>Password:</b> ${res.password}`);
                 switchView('loginView');
-            } else if (res) {
-                showModal("Failed", res.message);
-            }
+            } else if (res) showModal("Failed", res.message);
         }
 
         async function login() {
-            const data = {
-                action: "login",
-                loginId: document.getElementById('loginId').value,
-                password: document.getElementById('loginPass').value
-            };
-
-            const res = await apiCall(data);
-            if(res && res.success) {
-                currentUser = res.user;
-                switchView('dashboardView');
-            } else {
-                showModal("Login Failed", res ? res.message : "Error connecting to server.");
-            }
+            const res = await apiCall({ action: "login", loginId: document.getElementById('loginId').value, password: document.getElementById('loginPass').value });
+            if(res && res.success) { currentUser = res.user; switchView('dashboardView'); } 
+            else showModal("Login Failed", res ? res.message : "Error connecting.");
         }
 
         async function recoverPassword() {
-            const data = {
-                action: "forgotPassword",
-                mobile: document.getElementById('fgtMobile').value,
-                email: document.getElementById('fgtEmail').value
-            };
-            const res = await apiCall(data);
-            if(res && res.success) {
-                showModal("Password Recovered", `Your Password is:<br><br><b>${res.password}</b>`);
-            } else {
-                showModal("Error", res ? res.message : "Details not found.");
-            }
+            const res = await apiCall({ action: "forgotPassword", mobile: document.getElementById('fgtMobile').value, email: document.getElementById('fgtEmail').value });
+            if(res && res.success) showModal("Password Found", `Your Password is:<br><br><b>${res.password}</b>`);
+            else showModal("Error", res ? res.message : "Details not found.");
         }
 
         async function fetchSettings() {
@@ -286,71 +306,126 @@
             if(res && res.success) appSettings = res.data;
         }
 
-        async function spinWheel() {
+        // Spin Logic
+        function startSpin() {
+            const btn = document.getElementById('spinBtn');
             const wheel = document.getElementById('wheel');
-            const randomDegree = Math.floor(Math.random() * 360) + 1440;
+            btn.disabled = true; btn.innerText = "Spinning...";
+
+            // Random prize selection logic
+            const targetSlice = Math.floor(Math.random() * 6); 
+            const rewardAmount = spinPrizes[targetSlice];
             
-            wheel.style.transform = `rotate(${randomDegree}deg)`;
+            // Calculate rotation: 6 slices = 60 degrees each. Add 5 full rotations (1800deg) for effect.
+            // Slices start from top center, rotate anti-clockwise to calculate target.
+            const sliceDegree = 360 / 6;
+            const targetDegree = 1800 + (360 - (targetSlice * sliceDegree)) - (sliceDegree/2);
+            
+            wheel.style.transform = `rotate(${targetDegree}deg)`;
             
             setTimeout(async () => {
-                const rewardAmount = Math.floor(Math.random() * 10) + 1;
-                const res = await apiCall({ action: "addReward", userId: currentUser.userId, type: "Spin", amount: rewardAmount });
+                const res = await apiCall({ action: "addReward", userId: currentUser.userId, type: "Spin Bonus", amount: rewardAmount });
                 
                 if(res && res.success) {
                     currentUser.wallet = res.newBalance;
                     document.getElementById('topWallet').innerText = currentUser.wallet;
-                    showModal("Congratulations!", `You won ₹${rewardAmount}`);
+                    showModal("🎉 You Won!", `Congratulations! You won <b>₹${rewardAmount}</b>.`);
+                } else {
+                    showModal("Oops", "Something went wrong saving your reward.");
                 }
-                wheel.style.transform = `rotate(${randomDegree % 360}deg)`;
-            }, 3000);
+                
+                // Reset visual safely
+                wheel.style.transition = "none";
+                wheel.style.transform = `rotate(${targetDegree % 360}deg)`;
+                setTimeout(() => wheel.style.transition = "transform 4s cubic-bezier(0.2, 0.8, 0.2, 1)", 50);
+                
+                btn.disabled = false; btn.innerText = "SPIN & EARN";
+            }, 4200);
         }
 
-        async function updateKyc() {
-            if(currentUser.kyc === "Verified") {
-                showModal("KYC", "Your UPI is already verified: " + currentUser.upi);
-                return;
+        // Transactions logic
+        async function fetchTransactions() {
+            const res = await apiCall({ action: "getTransactions", userId: currentUser.userId });
+            if(res && res.success) {
+                const list = document.getElementById('txnList');
+                list.innerHTML = "";
+                if(res.data.length === 0) list.innerHTML = "<p style='text-align:center; color:#888;'>No transactions found.</p>";
+                
+                res.data.forEach(t => {
+                    let colorClass = t.type === "Withdrawal" ? "text-orange" : "text-green";
+                    let sign = t.type === "Withdrawal" ? "-" : "+";
+                    list.innerHTML += `
+                    <div class="txn-item">
+                        <div>
+                            <p style="font-weight:bold; color:#333;">${t.type}</p>
+                            <p style="font-size:12px; color:#888;">${t.date} • ${t.status}</p>
+                        </div>
+                        <div class="txn-amt ${colorClass}">${sign}₹${t.amount}</div>
+                    </div>`;
+                });
+                document.getElementById('txnModal').style.display = 'flex';
             }
-            let upi = prompt("Enter your UPI ID to verify KYC:");
+        }
+
+        // Withdrawal Logic
+        function openWithdrawModal() {
+            document.getElementById('withdrawBal').innerText = currentUser.wallet;
+            document.getElementById('withdrawAmt').value = "";
+            document.getElementById('withdrawModal').style.display = 'flex';
+        }
+
+        async function submitWithdrawal() {
+            if(currentUser.kyc !== "Verified") return showModal("KYC Required", "Please complete your KYC (UPI ID) from the Manage page before withdrawing.");
+            
+            const amt = parseFloat(document.getElementById('withdrawAmt').value);
+            if(!amt || amt <= 0) return alert("Enter valid amount");
+            if(amt > parseFloat(currentUser.wallet)) return alert("Insufficient Balance");
+
+            closeModal('withdrawModal');
+            const res = await apiCall({ action: "requestWithdrawal", userId: currentUser.userId, amount: amt });
+            
+            if(res && res.success) {
+                currentUser.wallet = res.newBalance;
+                document.getElementById('topWallet').innerText = currentUser.wallet;
+                showModal("Success", `Withdrawal request for ₹${amt} submitted successfully. Status is Pending.`);
+            } else {
+                showModal("Error", res.message);
+            }
+        }
+
+        // KYC & Support
+        async function updateKyc() {
+            if(currentUser.kyc === "Verified") return showModal("KYC Verified", "Your UPI is verified: " + currentUser.upi);
+            let upi = prompt("Enter your UPI ID (eg: mobile@upi) for verification:");
             if(upi) {
                 const res = await apiCall({ action: "updateKYC", userId: currentUser.userId, upi: upi });
                 if(res && res.success) {
-                    currentUser.kyc = "Verified";
-                    currentUser.upi = upi;
-                    updateKycUI();
-                    showModal("Success", "KYC Updated Successfully!");
+                    currentUser.kyc = "Verified"; currentUser.upi = upi; updateKycUI();
+                    showModal("Success", "UPI Linked Successfully!");
                 }
             }
         }
 
         function updateKycUI() {
-            const kycStatus = document.getElementById('kycStatus');
+            const kycSt = document.getElementById('kycStatus');
             if(currentUser.kyc === "Verified") {
-                kycStatus.innerHTML = `✅ <span class="kyc-verified">Verified</span>`;
+                kycSt.innerHTML = `✅ Verified`;
+                kycSt.style.background = "#d4efdf"; kycSt.style.color = "#196f3d";
             }
         }
 
         function supportEmail() {
             const mail = appSettings.SupportEmail || "support@wincash.com";
-            const subject = encodeURIComponent("Support Request: User " + currentUser.userId);
-            const body = encodeURIComponent(`Hi Wincash Team,\n\nMy User ID is: ${currentUser.userId}\nMy Query is: \n\n`);
-            window.location.href = `mailto:${mail}?subject=${subject}&body=${body}`;
+            window.location.href = `mailto:${mail}?subject=Support: ${currentUser.userId}&body=Hi Wincash Team,%0D%0A%0D%0AMy User ID: ${currentUser.userId}%0D%0AQuery:%0D%0A`;
         }
 
         function shareApp() {
-            const text = `Join Wincash using my refer code: ${currentUser.referCode} and earn rewards!`;
-            if (navigator.share) {
-                navigator.share({ title: 'Wincash', text: text });
-            } else {
-                prompt("Copy this text and share:", text);
-            }
+            const text = `Earn Real Cash daily with Wincash! Sign up using my Refer Code: ${currentUser.referCode} and get bonus.`;
+            if (navigator.share) navigator.share({ title: 'Wincash App', text: text });
+            else prompt("Copy this message to share:", text);
         }
 
-        function logout() {
-            currentUser = {};
-            document.getElementById('loginId').value = "";
-            document.getElementById('loginPass').value = "";
-            switchView('loginView');
-        }
+        function logout() { currentUser = {}; switchView('loginView'); }
     </script>
 </body>
 </html>
